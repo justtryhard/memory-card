@@ -12,7 +12,6 @@ class QuestionDatabase:
     """
     Класс, с которым работает UI
     """
-
     def __init__(self):
         loader = QuestionLoader()
         questions = loader.load()
