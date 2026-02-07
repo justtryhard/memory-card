@@ -18,7 +18,7 @@ class QuestionDatabase:
         self.manager = QuestionManager(questions)
 
     def get_question(self) -> Dict | None:
-        return self.manager.get_random_question()
+        return self.manager.get_question()
 
     def check_answer(self, question: Dict, index: int) -> bool:
         return self.manager.check_answer(question, index)
@@ -36,7 +36,7 @@ class QuestionManager:
         self.questions = questions
         self.used_ids = set()
 
-    def get_random_question(self) -> Dict | None:
+    def get_question(self) -> Dict | None:
         """Возврат случайного вопроса без повторений.
         Вопросы не повторяются до полного прохождения списка.
         Если вопросы закончатся - происходит обнуление used_ids и начинается сначала.
