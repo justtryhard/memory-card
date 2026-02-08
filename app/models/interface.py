@@ -1,7 +1,5 @@
 import json
-import random
-from typing import List, Dict, Any, Optional 
-from PyQt5.QtWidgets import (QApplication,
+from PyQt5.QtWidgets import (
                             QMainWindow,      # Главное окно с меню/статусбаром                                                                                      
                             QWidget,          # Базовый виджет 
                             QVBoxLayout,      # Вертикальный лейаут 
@@ -14,75 +12,19 @@ from PyQt5.QtWidgets import (QApplication,
                              )
 from PyQt5.QtCore import Qt # Константы (флаги, выравнивание и т.д.)
 from PyQt5.QtGui import QFont  # Работа со шрифтами
-
-
-
-class QuestionDatabase:
-    """Работа с базой вопросов"""
-    def __init__(self, file_json: str = "database/questions.json"):
-        self.file_json = file_json
-        self.questions: List[Dict[str,Any]] = []
-        self.used_questions: List[int] = []
-        self.load_questions()
-        
-    def load_questions(self) -> None:
-        """Загрузка базы вопросов"""   
-        try: 
-            with open(self.file_json, 'r', encoding='UTF-8') as f:
-                self.questions = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):     
-            
-            self.questions = [
-                {  
-                "question": "Какой язык является официальным в Бразилии?",
-                "options": ["Испанский", "Португальский", "Английский", "Французский"],
-                "correct": 1  
-                },
-                {
-                "question": "В какой стране государственный язык — суахили?",
-                "options": ["Кения", "Танзания", "Уганда", "Руанда"],
-                "correct": 1
-                }
-            ]
-            
-    def get_random_qiestions(self) -> Optional[Dict[str, Any]]:
-        """Генерируем случайный вопрос"""        
-        if not self.questions:
-            return None
-        
-        if len(self.used_questions) >= len(self.questions):
-            self.used_questions = []  
-        
-        used_set = set(self.used_questions)
-        available_indices = [i for i in range(len(self.questions)) if i not in used_set]
-        
-        if not available_indices:
-            self.used_questions = []
-            available_indices = list(range(len(self.questions)))
-            
-        
-        question_index = random.choice(available_indices)
-        question = self.questions[question_index].copy()
-        question['id'] = question_index
-        self.used_questions.append(question_index)
-
-        return question
-
-    def mark_as_used(self, question_id: int) -> None:
-        """Отмечаем вопрос использованным"""
-        if question_id not in self.used_questions:
-            self.used_questions.append(question_id)
-            
+from logic.logic import QuestionDatabase
 
 class QuizWindow(QMainWindow):
     """Работа с окном приложения""" 
     def __init__(self):
         super().__init__()
         
-        self.database = QuestionDatabase
-        self.current_question: Optional[Dict[str, Any]] = None 
-        self.selected_answer: Optional[int] = None  # для букв A,B,C,D
-        self.result_shown: bool = False                
+      def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
+        super().__init__()
+        self.database = database  # Сохраняем переданную БД
+        self.current_question = None
+        self.selected_answer = None
+        self.is_result_shown = False
         
         self.init_ui()
         
@@ -93,7 +35,7 @@ class QuizWindow(QMainWindow):
         self.setWindowTitle("Memory Card — Культуры и языки мира")
         self.setFixedSize(600, 500)
 
-        centre_widget = QWidget
+        centre_widget = QWidget()
         self.setCentralWidget(centre_widget)
         
         main_layout = QVBoxLayout(centre_widget)  # layout делает вертикальную компановку виджета, если нужна горизонтальная, то можно поменять на QHBoxLayout
@@ -119,6 +61,7 @@ class QuizWindow(QMainWindow):
         
         for i, letter in enumerate(option_letters):
             radio = QRadioButton()
+            letter = chr(65 + i)
             radio.setText(f"{letter}")
             radio_font = QFont("BIPs", 13)
             radio.setFont(radio_font)
@@ -222,14 +165,3 @@ class QuizWindow(QMainWindow):
         
         self.laod_next_question()
         
-def main():
-    """Точка входа"""
-    app = QApplication() #пропишите сюда точку входа в мейн, тут надо будет допистаь как поймете какая точка входа 
-    
-    window = QuizWindow()
-    window.show()
-    
-    
-                   
-if __name__ == "__main__":
-    main()
