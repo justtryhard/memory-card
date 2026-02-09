@@ -16,9 +16,6 @@ from logic.logic import QuestionDatabase
 
 class QuizWindow(QMainWindow):
     """Работа с окном приложения""" 
-    def __init__(self):
-        super().__init__()
-        
       def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
         super().__init__()
         self.database = database  # Сохраняем переданную БД
@@ -27,10 +24,9 @@ class QuizWindow(QMainWindow):
         self.is_result_shown = False
         
         self.init_ui()
-        
         self.load_next_question()
         
-    def init_iu(self) -> None:   
+    def init_ui(self) -> None:   
         """Пользовательский интерфейс"""      
         self.setWindowTitle("Memory Card — Культуры и языки мира")
         self.setFixedSize(600, 500)
@@ -85,24 +81,24 @@ class QuizWindow(QMainWindow):
         self.answer_button = QPushButton("Ответить")
         self.answer_button.setFont(QFont("BIPs", 13))
         self.answer_button.setMinimumHeight(40)
-        self.answer_button.clicked.connect(self.on_answer_clicked)
+        self.answer_button.clicked.connect(self.on_answer_cliсked)
 
         self.next_button = QPushButton()
         self.next_button.setFont(QFont("BIPs", 13))
         self.next_button.setMinimumHeight(40)
-        self.next_button.cliked.connect(self.on_next_clicked)
+        self.next_button.cliсked.connect(self.load_next_question)
         self.next_button.setEnabled(False)
         
         buttons_layout.addWidget(self.answer_button)
         buttons_layout.addWidget(self.next_button)
         main_layout.addLayout(buttons_layout)
 
-    def laod_next_question(self) -> None:
+    def load_next_question(self) -> None:
         """Следущию случайный вопрос"""
         self.result_shown = False
         self.selected_answer = True
 
-        self.current_question = self.database.get_random_qiestions()
+        self.current_question = self.database.get_question()
         
         if not self.current_question:
             self.question_label.setText("Вопросы не найдены")
@@ -117,7 +113,7 @@ class QuizWindow(QMainWindow):
             if i < len(options):
                 radio.setText(f"{chr(65 + i)}, {options[i]}")
                 radio.setEnabled(True)
-                radio.setCliked(False)
+                radio.setClicked(False)
                 radio.show()
             else:
                 radio.hide()
@@ -127,7 +123,7 @@ class QuizWindow(QMainWindow):
         self.answer_button.setEnabled(True)
         self.next_button.setEnabled(False) 
         
-    def answer_cliked(self) -> None:
+    def on_answer_cliсked(self) -> None:
         """Нажатие кнопки Ответ"""               
         checked_button = self.button_group.checkedButton()
         if not checked_button:
@@ -141,7 +137,7 @@ class QuizWindow(QMainWindow):
         correctly_index = self.current_question("correctly")
         correctly_answer = self.current_question["options"][correctly_index]
 
-        is_correctly = (self.selected_answer == correctly_index)
+        is_correctly = (self.database.check_answer == correctly_index)
 
         if is_correctly:
             result_text = f"Правльнный\nПравильный ответ: {correctly_answer}"
@@ -158,10 +154,4 @@ class QuizWindow(QMainWindow):
         self.answer_button.setEnabled(False)
         self.next_button.setEnabled(True)
 
-    def next_clicked(self) -> None:
-        """Нажатие кнопки следующий"""
-        if self.current_question and 'id' in self.current_question:
-            self.database.mark_as_used(self.current_question['id'])
-        
-        self.laod_next_question()
-        
+
