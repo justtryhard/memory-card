@@ -16,7 +16,7 @@ from logic.logic import QuestionDatabase
 from models.interface import QuizWindow  
 from PyQt5.QtWidgets import QApplication
 
-# ====================== ЗАПУСК ПРИЛОЖЕНИЯ ======================
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     
