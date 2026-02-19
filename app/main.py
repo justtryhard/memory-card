@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Настройка кодировки для консоли
+# Настройка кодировки
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
     sys.stderr.reconfigure(encoding='utf-8', errors='ignore')
