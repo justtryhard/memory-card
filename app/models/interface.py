@@ -13,9 +13,11 @@ from PyQt5.QtCore import Qt # Константы (флаги, выравнива
 from PyQt5.QtGui import QFont  # Работа со шрифтами
 from logic.logic import QuestionDatabase
 
+
 class QuizWindow(QMainWindow):
     """Работа с окном приложения""" 
-    def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
+
+      def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
         super().__init__()
         self.database = database  # Сохраняем переданную БД
         self.current_question = None
@@ -80,8 +82,8 @@ class QuizWindow(QMainWindow):
         self.answer_button = QPushButton("Ответить")
         self.answer_button.setFont(QFont("BIPs", 13))
         self.answer_button.setMinimumHeight(40)
-        self.answer_button.clicked.connect(self.on_answer_clicked)
 
+        self.answer_button.clicked.connect(self.on_answer_clicked)
         self.next_button = QPushButton()
         self.next_button.setFont(QFont("BIPs", 13))
         self.next_button.setMinimumHeight(40)
@@ -108,7 +110,7 @@ class QuizWindow(QMainWindow):
         self.question_label.setText(self.current_question["question"])
         
         options = self.current_question["options"]
-        
+
         for i, radio in enumerate(self.radio_buttons):
             if i < len(options):
                 radio.setText(f"{chr(65 + i)}, {options[i]}")
@@ -127,7 +129,6 @@ class QuizWindow(QMainWindow):
         """Нажатие кнопки Ответ"""               
         checked_button = self.button_group.checkedButton()
         if not checked_button:
-            
             self.result_label.setText("Выберите вариант ответа")
             self.result_label.show()
             return 
@@ -153,5 +154,3 @@ class QuizWindow(QMainWindow):
         self.result_shown = True
         self.answer_button.setEnabled(False)
         self.next_button.setEnabled(True)
-
-
