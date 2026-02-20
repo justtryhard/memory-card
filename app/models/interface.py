@@ -17,7 +17,7 @@ from logic.logic import QuestionDatabase
 class QuizWindow(QMainWindow):
     """Работа с окном приложения""" 
 
-      def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
+    def __init__(self, database: QuestionDatabase):  # Принимаем БД как параметр
         super().__init__()
         self.database = database  # Сохраняем переданную БД
         self.current_question = None
@@ -84,7 +84,7 @@ class QuizWindow(QMainWindow):
         self.answer_button.setMinimumHeight(40)
 
         self.answer_button.clicked.connect(self.on_answer_clicked)
-        self.next_button = QPushButton()
+        self.next_button = QPushButton("Следующий")
         self.next_button.setFont(QFont("BIPs", 13))
         self.next_button.setMinimumHeight(40)
         self.next_button.clicked.connect(self.load_next_question)
@@ -135,15 +135,15 @@ class QuizWindow(QMainWindow):
         
         self.selected_answer = self.button_group.id(checked_button)
         
-        correctly_index = self.current_question("correct")
+        correctly_index = self.current_question["correct"]
         correctly_answer = self.current_question["options"][correctly_index]
 
-        is_correctly = (self.database.check_answer == correctly_index)
+        is_correctly = self.database.check_answer(self.current_question, self.selected_answer)
 
         if is_correctly:
-            result_text = f"Правльнный\nПравильный ответ: {correctly_answer}"
+            result_text = f"Правильно!"
         else:
-            result_text = f"Неправильно\nПравильный ответ: {correctly_answer}"    
+            result_text = f"Неправильно!\nПравильный ответ: {correctly_answer}"
 
         self.result_label.setText(result_text)
         self.result_label.show()
